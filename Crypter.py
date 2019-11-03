@@ -40,8 +40,8 @@ def unpad(text,padlen):
 def printmenu():
     print("""1) Encrypt a File (Generates a Random Key)
 2) Encrypt Text (Generates a Random Key)
-3) Decrypt a File (Needs Key)
-4) Decrypt Text (Needs Key)
+3) Decrypt a File (Key Required)
+4) Decrypt Text (1Line Encryption)
 Q) Quit\n""")
 while 1:
     printmenu()
@@ -55,25 +55,43 @@ while 1:
         plainfile = file.read()
         key = keygen()
         wfile.write(encrypt(key, plainfile))
+        wfile.flush()
+        wfile.close()
+        file.close()
         print("Plain File: " + filename)
         print("Encrypted File: " + wfilename)
         print("Key: " + key)
+
     elif choice == '2':
         plaintext = input("Text to Encrypt: ")
         key = keygen()
         enc_text = encrypt(key,plaintext)
-        print("Un-Encrypted Text: " + plaintext)
-        print("Encrypted Text: " + enc_text)
-        print("Using Key: " + key)
+        print("Un-Encrypted Text: %s\nEncrypted Text: %s\nUsing Key: %s\n1Line Encryption: %s|%s " %(plaintext,enc_text,key,key,enc_text))
     elif choice == '3':
-        break
+        EncFile = input("Encrypted Filename: ")
+        key = input("Decryption Key: ")
+        OrigFileP1,OrigExt = path.splitext(EncFile)
+        OrigFile = path.splitext(OrigFileP1)[0] + OrigExt
+        File_Encrypted = open(EncFile,"r")
+        File_Original = open(OrigFile,"w")
+        enc_text = File_Encrypted.read()
+        try:
+            File_Original.write(decrypt(key,enc_text))
+            File_Original.flush()
+        except:
+            print("File Decryption Failed...")
+            exit()
+        
+        File_Encrypted.close()
+        File_Original.close()
+        print("Encrypted Filename: %s\nOutput File: %s\nKey Used: %s"%(EncFile,OrigFile,key))
     elif choice == '4':
-        enc_text = input("Encrypted Text: ")
-        key = input("Key: ")
+        enc_1line = input("Encrypted Text (1Line): ")
+        enc_arr = enc_1line.split("|")
+        key = enc_arr[0]
+        enc_text = enc_arr[1]
         decrypted_text = decrypt(key, enc_text)
-        print("Encrypted Text: " + enc_text)
-        print("Decrypted Text: " + decrypted_text)
-        print("Using Key: " + key)
+        print("Encrypted Text: %s\nDecrypting Using Key: %s\n\nDecrypted Text %s" %(enc_text,key,decrypted_text))
     elif choice == 'Q' or choice == 'q':
         break
     else:
