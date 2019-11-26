@@ -8,7 +8,7 @@ def encrypt(key, raw ):
     iv = Random.new().read( AES.block_size )
     cipher = AES.new( key, AES.MODE_CBC, iv )
     return base64.b64encode( iv + cipher.encrypt( raw ) ).decode("UTF-8")
-def decrypt(key, enc,):
+def decrypt(key, enc):
     enc = base64.b64decode(enc)
     iv = enc[:16]
     cipher = AES.new(key, AES.MODE_CBC, iv )
@@ -91,7 +91,7 @@ while 1:
         key = enc_arr[0]
         enc_text = enc_arr[1]
         decrypted_text = decrypt(key, enc_text)
-        print("Encrypted Text: %s\nDecrypting Using Key: %s\n\nDecrypted Text %s" %(enc_text,key,decrypted_text))
+        print("Encrypted Text: %s\nDecrypting Using Key: %s\n\nDecrypted Text: %s\n" %(enc_text,key,decrypted_text))
     elif choice == 'Q' or choice == 'q':
         break
     else:
